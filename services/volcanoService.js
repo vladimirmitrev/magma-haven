@@ -27,3 +27,18 @@ exports.vote = async (volcanoId, userId) => {
 exports.delete = (volcanoId) => Volcano.findByIdAndDelete(volcanoId);
 
 exports.edit = (volcanoId, volcanoData) => Volcano.findByIdAndUpdate(volcanoId, volcanoData,{ runValidators: true});
+
+exports.search = (name, typeVolcano) => {
+    let query = {};
+  
+    if(name) {
+      query.name = new RegExp(name, 'i');
+    }
+
+    if(typeVolcano) {
+        query.typeVolcano = typeVolcano
+      }
+
+    
+    return Volcano.find(query);
+  };
