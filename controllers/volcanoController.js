@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { isAuth } = require('../middlewares/authMiddleware');
-// const { isPostOwner } = require('../middlewares/creatureMiddlewares');
+const { isPostOwner } = require('../middlewares/volcanoMiddlewares');
 const Volcano = require('../models/Volcano');
 const volcanoService = require('../services/volcanoService');
 const { getErrorMessage } = require('../utils/errorUtils');
@@ -31,60 +31,60 @@ router.post('/create', isAuth, async (req, res) => {
     }
   });
 
-//   router.get('/:creatureId/details', async (req, res) => {
-//     const creatureId = req.params.creatureId;
-//     const userId = req.user?._id;
-//     try {
-//       const creature = await creatureService.getOneDetailed(creatureId).lean();
-//       const votes = creature.votes.map(user => user.email).join(', ');
-//       const isOwner = creature.owner && creature.owner._id == userId;
-//       const isVoted = creature.votes.some(user => user._id == userId);
-//       const votesCount = Number(creature.votes.length);
-//       const owner = creature.owner;
+  router.get('/:volcanoId/details', async (req, res) => {
+    const volcanoId = req.params.volcanoId;
+    const userId = req.user?._id;
+    try {
+      const volcano = await volcanoService.getOneDetailed(volcanoId).lean();
+      // const votes = volcano.votes.map(user => user.email).join(', ');
+      const isOwner = volcano.owner && volcano.owner._id == userId;
+      const isVoted = volcano.voteList.some(user => user._id == userId);
+      const votesCount = Number(volcano.voteList.length);
+      const owner = volcano.owner;
 
-//       res.render('creatures/details', { ...creature, votes, isOwner, isVoted, votesCount, owner });
-//     } catch (err) {
-//       // console.log(err);
-//       res.redirect('/');
-//     }
-// });
+      res.render('volcanoes/details', { ...volcano, isOwner, isVoted, votesCount, owner });
+    } catch (err) {
+      console.log(err.message);
+      res.redirect('/');
+    }
+});
 
-// router.get('/:creatureId/vote', isAuth, async (req, res) => {
-//   try {
-//     await creatureService.vote(req.params.creatureId, req.user._id);
+router.get('/:volcanoId/vote', isAuth, async (req, res) => {
+  try {
+    await volcanoService.vote(req.params.volcanoId, req.user._id);
 
-//     res.redirect(`/creatures/${req.params.creatureId}/details`);
+    res.redirect(`/volcanoes/${req.params.volcanoId}/details`);
 
-//   } catch (err) {
-//     // console.log(err);
-//     res.redirect('/');
-//   }
-// });
+  } catch (err) {
+    // console.log(err);
+    res.redirect('/');
+  }
+});
 
-// router.get('/:creatureId/delete', isPostOwner, async (req, res) => {
-//   await creatureService.delete(req.params.creatureId);
+router.get('/:volcanoId/delete', isPostOwner, async (req, res) => {
+  await volcanoService.delete(req.params.volcanoId);
 
-//   res.redirect('/creatures/all-posts');
-// });
+  res.redirect('/volcanoes/catalog');
+});
 
-// router.get('/:creatureId/edit', isPostOwner, async (req, res) => {
+router.get('/:volcanoId/edit', isPostOwner, async (req, res) => {
 
-//   res.render(`creatures/edit`, { ...req.creature });
-// });
+  res.render(`volcanoes/edit`, { ...req.volcano });
+});
 
-// router.post('/:creatureId/edit', isPostOwner, async (req, res) => {
-//   const creatureData = req.body;
-//   const creatureId = req.params.creatureId;
+router.post('/:volcanoId/edit', isPostOwner, async (req, res) => {
+  const volcanoData = req.body;
+  const volcanoId = req.params.volcanoId;
 
-//   try {
-//     await creatureService.edit(creatureId, creatureData);
+  try {
+    await volcanoService.edit(volcanoId, volcanoData);
 
-//     res.redirect(`/creatures/${creatureId}/details`);
-//   } catch (err) {
+    res.redirect(`/volcanoes/${volcanoId}/details`);
+  } catch (err) {
     
-//     res.render(`creatures/edit`, {...creatureData, error: getErrorMessage(err)});
-//   }
-// });
+    res.render(`volcanoes/edit`, {...volcanoData, error: getErrorMessage(err)});
+  }
+});
 
 
 module.exports = router;

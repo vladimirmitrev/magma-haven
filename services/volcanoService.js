@@ -14,16 +14,16 @@ exports.create = async (userId, volcanoData) => {
 
 exports.getAll = () => Volcano.find();
 
-// exports.getOne = (creatureId) => Creature.findById(creatureId);
+exports.getOne = (volcanoId) => Volcano.findById(volcanoId);
 
-// exports.getOneDetailed = (creatureId) => this.getOne(creatureId).populate('owner').populate('votes');
+exports.getOneDetailed = (volcanoId) => this.getOne(volcanoId).populate('owner').populate('voteList');
 
-// exports.vote = async (creatureId, userId) => {
-//     await Creature.findByIdAndUpdate(creatureId, { $push: { votes: userId } });
-//     await User.findByIdAndUpdate(userId, { $push: { votedPosts: creatureId } });
+exports.vote = async (volcanoId, userId) => {
+    await Volcano.findByIdAndUpdate(volcanoId, { $push: { voteList: userId } });
+    await User.findByIdAndUpdate(userId, { $push: { votedPosts: volcanoId } });
   
-// };
+};
 
-// exports.delete = (creatureId) => Creature.findByIdAndDelete(creatureId);
+exports.delete = (volcanoId) => Volcano.findByIdAndDelete(volcanoId);
 
-// exports.edit = (creatureId, creatureData) => Creature.findByIdAndUpdate(creatureId, creatureData,{ runValidators: true});
+exports.edit = (volcanoId, volcanoData) => Volcano.findByIdAndUpdate(volcanoId, volcanoData,{ runValidators: true});
