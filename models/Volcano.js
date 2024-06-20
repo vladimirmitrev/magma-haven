@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const courseSchema = new mongoose.Schema({
+const volcanoSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Name is required!'],
@@ -30,7 +30,10 @@ const courseSchema = new mongoose.Schema({
     typeVolcano: {
         type: String,
         required: [true, 'Type volcano is required!'],
-        enum: ['Supervolcanoes', 'Submarine', 'Subglacial', 'Mud', 'Stratovolcanoes', 'Shield'],  
+        enum: { 
+            values: ['Supervolcanoes', 'Submarine', 'Subglacial', 'Mud', 'Stratovolcanoes', 'Shield'],
+            message: 'Enter a valid type of volcano'
+        }
     },
     description: {
         type: String,
@@ -49,6 +52,6 @@ const courseSchema = new mongoose.Schema({
 { timestamps: true}
 );
 
-const Creature = mongoose.model('Creature', courseSchema);
+const Volcano = mongoose.model('Volcano', volcanoSchema);
 
-module.exports = Creature;
+module.exports = Volcano;
